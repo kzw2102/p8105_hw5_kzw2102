@@ -28,21 +28,119 @@ iris_with_missing = iris %>%
 
 ```{r function}
 replace_missing = function(x) {
-  if (is.numeric(x)) {
-    mean_x=mean(x)
-    mean_x
-    x=replace(x, is.na(x), mean_x)
-  }else if (is.character(x)) {
+  if (is.character(x)) {
     x=replace(x, is.na(x), "virginica")
+  } else {
+    mean_x=mean(x, na.rm=TRUE)
+    x=replace(x, is.na(x), mean_x)
   }
 }
 
-output = map(iris_with_missing, replace_missing)
+output = map_dfr(iris_with_missing, replace_missing)
 
-output
 ```
+
 ## Problem 2
 ```{r}
-readr::read_csv("./data/hw5_data.zip")
+
+#tibble with one column to read in list files
+problem2_data= tibble(
+  list.files(path="./data/data", all.files=FALSE, pattern="*.csv")
+) %>% map_df(~read_csv(., col_types=cols(.default="c")))
+#function to read in data so that can pull in -- one person per column
+reading_files = function(x) {
+  read_csv(x) %>% mutate(filename=x)
+} 
+ouput1=map(problem2_data, reading_files)
+
+reading_csv_map_df <- function(path=".data/data", pattern="*.csv"){
+  list.files(path=".data.data", pattern, full.names=TRUE) %>% 
+  map_df(~read.csv(., stringAsfactors=FALSE))
+} 
+
+output=map(problem2_data, reading_csv_map_df)
+
+## take three
+problem2_data=tibble(
+  list.files(path="./data/data", pattern="*.csv")
+)
+list.data<- list()
+for (i in 1:length(problem2_data)){
+  list.data[[i]] <- read.csv(problem2_data[i])
+}
+names(list.data)<-list.filenames
+
+### take 4
+problem2_data_path=tibble(
+  list.files(path="./data/data", pattern="*.csv")
+)
+data_2=problem2_data_path %>% 
+  mutate(file_contents=map(problem2_data, ~read_csv(file.path("./data/data",.))))
+data_2
+
+
+### take 5 
+
+# create a path for each file
+problem2_data= tibble(
+  list.files(path="./data/data", all.files=FALSE, pattern="*.csv", full.names=TRUE) %>% mutate(
+    filenames=list.files(path="./data/data", all.files=FALSE, pattern="*.csv", full.names=TRUE)
+  )
+
+reading_files = function(x) {
+  x=read_csv(x)
+} 
+vec_data=str_c(problem2_data, 1:length(problem2_data))
+
+output=vector("list", length(problem2_data))
+
+for (i in 1:length(problem2_data)){
+  output[[i]]=reading_files(vec_data[[i]])
+}
+
+data_problem2=bind_rows(output)
+
+data_problem2=map_df(, reading_files)
+
+#Take 6:
+data_problem2=tibble(
+  files=list.files(path="./data/data", full.names=TRUE),
+    path=str_c("./data/data",files)
+)
+problem2_data=map_df(data_problem2, read_csv)
+reading_files=function(x){
+  files=list.files(path="./data/data", full.names=TRUE) %>% 
+    path=str_c("./data/data",files)
+  gsub(pattern=".csv$", replacement="")
+}
+
+problem2_data=map_df(list.files(path="./data/data", full.names=TRUE), rbind, reading_files, col_names=FALSE, .id="input")
+
+problem2_data= tibble(
+  list.files(path="./data/data", all.files=FALSE, pattern="*.csv", full.names=TRUE) 
+
 ```
+
+```{r}
+#TA wise words
+data_problem2=tibble(
+  files=list.files(path="./data/data", full.names=TRUE),
+    path=str_c("./data/data",files)
+)
+
+read_problem2=map_df(data_problem2, read_csv)
+
+## hannah's wise words
+
+getwd()
+
+data_2=tibble(
+  list.files(path="./data/data", pattern=".csv$", full.names=TRUE)
+)
+participant_data=
+  map_df(data_2, read_csv)
+```
+
+
+### PRoblem 3:
 

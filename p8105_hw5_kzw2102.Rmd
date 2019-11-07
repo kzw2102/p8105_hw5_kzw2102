@@ -124,23 +124,30 @@ problem2_data= tibble(
 ```{r}
 #TA wise words
 data_problem2=tibble(
-  files=list.files(path="./data/data", full.names=TRUE),
-    path=str_c("./data/data",files)
-)
+  files=list.files(path="./data/data"),
+  path=str_c("./data/data/",files)
+) %>% 
+  mutate(data = map(path, read_csv)) %>% 
+  unnest()
 
-read_problem2=map_df(data_problem2, read_csv)
-
-## hannah's wise words
-
-getwd()
-
-data_2=tibble(
-  list.files(path="./data/data", pattern=".csv$", full.names=TRUE)
-)
-participant_data=
-  map_df(data_2, read_csv)
 ```
 
 
-### PRoblem 3:
+### Problem 3:
+```{r}
+sim_regression = function(n, beta0 = 2, beta1 = 3) {
+  
+  sim_data = tibble(
+    x = rnorm(30, mean = 1, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+```
 

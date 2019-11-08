@@ -51,8 +51,31 @@ data_problem2=tibble(
   mutate(data = map(path, read_csv)) %>% 
   unnest()
 
+## change file names to include control arm and subject ID
+## make sure weekly observations are tidy
 data_problem2_tidy= 
-  data_problem2 
+  data_problem2 %>% 
+  janitor::clean_names() %>% 
+  separate(files, c("control", "experiment")) %>% 
+  pivot_longer(
+    week_1:week_8,
+    names_to="Week",
+    names_prefix="week_",
+    values_to="Observation"
+  ) %>% 
+  select(files, Week, Observation) %>% 
+  mutate(
+    ID = files,
+    Arm = files,
+    Arm=str_replace(arm,"^exp", "Experiment"),
+    Arm=str_replace(arm, "^con", "Control")
+  )
+    
+    ID=str)ID(recode, 'con_01.csv'='1', 'con_02.csv'='2', )
+    ID=as.numeric(ID)
+    
+  )
+  
   
 
 ```

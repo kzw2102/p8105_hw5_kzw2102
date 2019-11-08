@@ -38,6 +38,8 @@ replace_missing = function(x) {
 
 output = map_dfr(iris_with_missing, replace_missing)
 
+output
+
 ```
 
 ## Problem 2
@@ -56,7 +58,6 @@ data_problem2=tibble(
 data_problem2_tidy= 
   data_problem2 %>% 
   janitor::clean_names() %>% 
-  separate(files, c("control", "experiment")) %>% 
   pivot_longer(
     week_1:week_8,
     names_to="Week",
@@ -65,37 +66,41 @@ data_problem2_tidy=
   ) %>% 
   select(files, Week, Observation) %>% 
   mutate(
-    ID = files,
-    Arm = files,
-    Arm=str_replace(arm,"^exp", "Experiment"),
-    Arm=str_replace(arm, "^con", "Control")
-  )
-    
-    ID=str)ID(recode, 'con_01.csv'='1', 'con_02.csv'='2', )
-    ID=as.numeric(ID)
-    
-  )
-  
+    Arm = str_replace(files,"_[0-9][0-9].csv",""),
+    Arm = recode(Arm, "con"="Control", "exp"="Experiment"),
+    ID = str_replace(files, ".csv", " ")
+  ) %>% 
+  select(ID, Arm, Week, Observation, -files)
   
 
+# spaghetti plot by group
+data_problem2_tidy %>% 
+  ggplot(aes(x = Week, y = Observation, group = ID, color= Arm)) + 
+  geom_line() +
+  labs(
+    title = "Individual Observation over 8-Week Period"
+  )
 ```
 
 
 ### Problem 3:
 ```{r}
-sim_regression = function(n, beta0 = 2, beta1 = 3) {
+sim_regression = function(n=30, beta0 = 2, beta1 = 0) {
   
   sim_data = tibble(
-    x = rnorm(30, mean = 1, sd = 1),
-    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+    x = rnorm(n, mean = 0, sd = sqrt(50)),
+    y = beta0 + beta1 * x + rnorm(n, 0, 50)
   )
   
-  ls_fit = lm(y ~ x, data = sim_data)
-  
-  tibble(
-    beta0_hat = coef(ls_fit)[1],
-    beta1_hat = coef(ls_fit)[2]
-  )
+  ls_fit = lm(y ~ x, data = sim_data) %>% 
+    broom::tidy() %>% 
+    select(term, estimate, p.value)
 }
+
+sim_results = 
+  tibble(beta1 = 0:6) %>% 
+  rerun(10000, sim_regression(30, 2, 3)) %>% 
+  bind_rows()
+
 ```
 

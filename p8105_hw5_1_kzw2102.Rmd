@@ -94,7 +94,8 @@ sim_regression = function(n=30, beta0 = 2, beta1=0) {
   
   ls_fit = lm(y ~ x, data = sim_data) %>% 
     broom::tidy() %>% 
-    select(term, estimate, p.value)
+    select(term, estimate, p.value) %>% 
+    filter(term=="x")
 
 }
 
@@ -165,4 +166,4 @@ ggplot(data=combined_df, aes(x=beta1, y=beta1_mean, color=beta1_mean)) +
   geom_point(aes(x=beta1, y=beta1_mean, xlab="beta1", ylab="mean", color="blue"))+
   geom_point(aes(x=beta1, y=beta1_mean_reject, xlab="beta1", ylab="mean", color="red")) + scale_color_hue(labels=c('overall beta1', 'null beta1'))
 ```
-Here we can see that sample average for beta1 across tests in which the null is rejected (here we see it is in the color red ) is much lower than the average for beta1 across all the tests. This would make sense since the more extreme the betas are, the smaller the would be. 
+Here we can see that sample average for beta1 across tests in which the null is rejected (here we see it is in the color red ) is much lower than the average for beta1 across all the tests. This would make sense since the more extreme the betas are, the smaller the would be. We see that the graphs converge later because the larger the effect size, the larger the power is.

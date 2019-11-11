@@ -82,6 +82,9 @@ Here we have a tidy datafram containing `r nrow(data_problem2_tidy)` rows and `r
 
 ### Problem 3:
 ```{r simulation}
+
+set.seed(1)
+
 sim_regression = function(n=30, beta0 = 2, beta1=0) {
   
   sim_data = tibble(

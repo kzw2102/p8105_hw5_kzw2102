@@ -1,10 +1,10 @@
 ---
-title: "HW 5"
-Author: "Kelly Wang, kzw2102"
+title: "HW 5 updated" 
+author: "Kelly Wang, kzw2102"
 output: github_document
 ---
 
-# Problem 1
+### Problem 1
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -40,7 +40,7 @@ Variables include length of Sepal, width of Sepal, length of Petal, width of Pet
 
 ## Problem 2
 
-```{r}
+```{r problem2}
 #TA wise words
 data_problem2=tibble(
   files=list.files(path="./data/data"),
@@ -77,10 +77,10 @@ data_problem2_tidy %>%
     title = "Individual Observation over 8-Week Period"
   )
 ```
-Here we have a tidy datafram containing `r nrow(data_problem2_tidy)` rows/participants and `r ncol(data_problem2_tidy)` columns. Variables include the subject ID, control arm, the week in which they were observed, and their observations. Here we can see that the control arms tend to have lower observations than the experiment arms during this 8 week study period. 
+Here we have a tidy datafram containing `r nrow(data_problem2_tidy)` rows and `r ncol(data_problem2_tidy)` columns. Variables include the subject ID, control arm, the week in which they were observed, and their observations. A total of `r nrow(data_problem2)` individuals participated in the study. Here we can see that the control arms tend to have lower observations than the experiment arms during this 8 week study period. 
 
 ### Problem 3:
-```{r}
+```{r simulation}
 sim_regression = function(n=30, beta0 = 2, beta1=0) {
   
   sim_data = tibble(
@@ -112,8 +112,12 @@ sim_results =
 sim_results
 head(sim_results) %>% knitr::kable()
 ```
-### Proportion of times the null was rejected (the power of the test) on the y axis and true value of beta1 on the xaxis. Relationship between effect size and power
-```{r}
+
+Here we can see the first few lines of the total `r nrow(sim_results)` rows in our dataset. We will be using this simulated dataset and plot the relationship between power and effect size and see if there is a difference betweeen average betas among the whole sample vs those with p<0.05. 
+
+### Proportion of times the null was rejected (the power of the test) on the y axis and true value of beta1 on the xaxis. Relationship between effect size and power. Here are the first lines of the table of estimates of beta1 and of the resulting p-value.
+
+```{r proportion_plot}
 sim_results %>% 
   group_by(beta1) %>% 
   summarize(
@@ -134,7 +138,7 @@ sim_results %>%
 We can see that as effect size gets larger, power increases. There have a positive linear relationship. 
 
 ### Plot showing the average estimate of beta1 on y axis and true value of beta1 on the xaxis with another plot showing average estimate of beta1 only in samples in which the null was rejected on the y axis and true value of beta1 on the x axis. 
-```{r}
+```{r estimate_plot}
 overall_df =
 sim_results %>% 
   group_by(beta1) %>% 
@@ -149,11 +153,12 @@ reject_df=
   summarize(
     beta1_mean_reject= mean(estimate)
   )
+
 combined_df =
   left_join(overall_df, reject_df, by = "beta1")
 
 ggplot(data=combined_df, aes(x=beta1, y=beta1_mean, color=beta1_mean)) +
-  geom_point(aes(x=beta1, y=beta1_mean, xlab="beta1", ylab="mean", color=alpha('blue', 0.05)))+
-  geom_point(aes(x=beta1, y=beta1_mean_reject, xlab="beta1", ylab="mean", color=alpha('red',0.05))) + scale_color_hue(labels=c('overall beta1', 'null beta1'))
+  geom_point(aes(x=beta1, y=beta1_mean, xlab="beta1", ylab="mean", color="blue"))+
+  geom_point(aes(x=beta1, y=beta1_mean_reject, xlab="beta1", ylab="mean", color="red")) + scale_color_hue(labels=c('overall beta1', 'null beta1'))
 ```
-Here we can see that sample average estimates for beta1 is lower than the average estimates for which the null was rejected.This would make sense as the more extreme the beta is, the more significant the p-value is. 
+Here we can see that sample average for beta1 across tests in which the null is rejected (here we see it is in the color red ) is much lower than the average for beta1 across all the tests. This would make sense since the more extreme the betas are, the smaller the would be. 

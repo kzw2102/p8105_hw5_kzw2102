@@ -40,9 +40,7 @@ output = map_dfr(iris_with_missing, replace_missing)
 output
 
 ```
-The new output dataframe contains `r nrow(output)` rows and `r ncol(output)` columns, where each row contains a unique value. Those originally with numeric values were replaced with the mean of the non-missing values and those originally with missing characters were replaced with "virginica". Variables include identifiers for length of sepal, wei
-
-with "virginica". Variables include identifiers for length of sepal, wdi,lp
+The new output dataframe contains `r nrow(output)` rows and `r ncol(output)` columns, where each row contains a unique value. Those originally with numeric values were replaced with the mean of the non-missing values and those originally with missing characters were replaced with "virginica". Variables include identifiers for length of sepal, width of sepal, lenght of petal,d width of pedal, and species name. Those that were 
 
 ## Problem 2
 
@@ -83,7 +81,7 @@ data_problem2_tidy %>%
     title = "Individual Observation over 8-Week Period"
   )
 ```
-
+Here we have a tidy datafram containing `r nrow(data_problem2_tidy)` rows/variables and `r ncol(data_problem2_tiday)` columns. Here we can see that t
 
 ### Problem 3:
 ```{r}
@@ -116,6 +114,7 @@ sim_results =
   unnest(estimate_p.value)
 
 sim_results
+head(sim_results) %>% knitr::kable()
 ```
 ### Proportion of times the null was rejected (the power of the test) on the y axis and true value of beta1 on the xaxis. Relationship between effect size and power
 ```{r}
@@ -157,6 +156,6 @@ combined_df =
 
 ggplot(data=combined_df, aes(x=beta1, y=beta1_mean, color=beta1_mean)) +
   geom_point(aes(x=beta1, y=beta1_mean.x, xlab="beta1", ylab="mean", color=alpha('blue', 0.05)))+
-  geom_point(aes(x=beta1, y=beta1_mean.y, color=alpha('red',0.05))) + scale_color_hue(labels=c('overall beta1', 'null beta1'))
+  geom_point(aes(x=beta1, y=beta1_mean.y, xlab="beta1", ylab="mean", color=alpha('red',0.05))) + scale_color_hue(labels=c('overall beta1', 'null beta1'))
 ```
 
